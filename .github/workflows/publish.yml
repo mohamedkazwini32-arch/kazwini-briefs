@@ -24,7 +24,7 @@ jobs:
           curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/" -o public/kitchen/index.html
           curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/site-survey.html" -o public/kitchen/site-survey.html
           curl -fL --retry 3 "https://kazwini-home-brief.tart-cocoa-5523.chatgpt.site/" -o public/home/index.html
-          curl -fL --retry 3 "https://kazwini-design-brief.tart-cocoa-5523.chatgpt.site/site-survey.html" -o public/home/site-survey.html
+          cp source/home-site-survey.html public/home/site-survey.html
 
           for file in modern classic minimal luxury palette-light palette-warm palette-contrast palette-dark solid-charcoal solid-greige solid-offwhite solid-taupe wood-dark-walnut wood-light-oak wood-smoked-oak wood-warm-walnut; do
             curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/assets/${file}.png" -o "public/kitchen/assets/${file}.png"
