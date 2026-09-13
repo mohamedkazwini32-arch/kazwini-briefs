@@ -1,0 +1,54 @@
+name: Build Kazwini Briefs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the approved surveys
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf public
+          mkdir -p public/kitchen/assets public/home/assets
+
+          curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/" -o public/kitchen/index.html
+          curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/site-survey.html" -o public/kitchen/site-survey.html
+          curl -fL --retry 3 "https://kazwini-home-brief.tart-cocoa-5523.chatgpt.site/" -o public/home/index.html
+          curl -fL --retry 3 "https://kazwini-design-brief.tart-cocoa-5523.chatgpt.site/site-survey.html" -o public/home/site-survey.html
+
+          for file in modern classic minimal luxury palette-light palette-warm palette-contrast palette-dark solid-charcoal solid-greige solid-offwhite solid-taupe wood-dark-walnut wood-light-oak wood-smoked-oak wood-warm-walnut; do
+            curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/assets/${file}.png" -o "public/kitchen/assets/${file}.png"
+          done
+
+          for file in living-0 living-1 living-2 living-3 bedroom-0 bedroom-1 bedroom-2 bedroom-3 bathroom-0 bathroom-1 bathroom-2 bathroom-3 mood-0 mood-1 mood-2 mood-3; do
+            curl -fL --retry 3 "https://kazwini-home-brief.tart-cocoa-5523.chatgpt.site/assets/${file}.png" -o "public/home/assets/${file}.png"
+          done
+
+          touch public/.nojekyll
+          cat > public/index.html <<'HTML'
+          <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#211e1a"><title>Kazwini Design | الاستبيانات</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#211e1a;color:#f6f1ea;font-family:Tahoma,Arial,sans-serif;padding:24px}.box{width:min(520px,100%);text-align:center}.logo{font-size:42px;font-weight:800;color:#b88752;letter-spacing:2px}h1{font-size:25px;margin:12px 0 8px}p{color:#cfc6bb;line-height:1.8;margin:0 0 28px}.links{display:grid;gap:14px}a{display:block;text-decoration:none;border:1px solid #75614c;background:#2d2925;color:#fff;padding:18px;border-radius:14px;font-size:18px;font-weight:700}a:hover,a:focus{background:#b88752;color:#211e1a}.sub{display:block;font-size:13px;font-weight:400;margin-top:7px;opacity:.8}</style></head><body><main class="box"><div class="logo">KD</div><h1>Kazwini Design</h1><p>اختر الاستبيان المطلوب لبدء تسجيل بيانات المشروع.</p><div class="links"><a href="kitchen/">استبيان تصميم المطبخ<span class="sub">التفضيلات، الخامات والاحتياجات الوظيفية</span></a><a href="home/">استبيان تصميم الشقة<span class="sub">الصالون، غرف النوم والحمامات</span></a></div></main></body></html>
+          HTML
+
+      - name: Publish files to gh-pages branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -R public /tmp/kazwini-public
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --orphan gh-pages
+          git rm -rf .
+          cp -R /tmp/kazwini-public/. .
+          git add .
+          git commit -m "Publish Kazwini Design surveys"
+          git push --force origin gh-pages
