@@ -22,7 +22,7 @@ jobs:
           mkdir -p public/kitchen/assets public/home/assets
 
           cp source/kitchen-index.html public/kitchen/index.html
-          curl -fL --retry 3 "https://kazwini-kitchen-brief.tart-cocoa-5523.chatgpt.site/site-survey.html" -o public/kitchen/site-survey.html
+          cp source/kitchen-site-survey.html public/kitchen/site-survey.html
           cp source/home-index.html public/home/index.html
           cp source/home-site-survey.html public/home/site-survey.html
 
