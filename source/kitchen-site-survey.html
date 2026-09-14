@@ -24,6 +24,7 @@
 </main>
 <nav class="nav"><button class="back" id="back">السابق</button><button class="next" id="next">ابدأ</button></nav><div class="toast" id="toast">تم نسخ ملخص المعاينة</div>
 <script>
+  let bridgeSent=false;
 const BRIDGE_ENDPOINT='https://script.google.com/macros/s/AKfycbyFCUaV6rmmx2FiYFqWcKYxGbG7cUxJfoQwx_HOHlomaXOn1TtA6rTfnUYNRGNL1Rt3Kg/exec';
 const steps=[...document.querySelectorAll('.step')],last=steps.length-1;let cur=0;const next=document.querySelector('#next'),back=document.querySelector('#back');const $=id=>document.getElementById(id);$('date').value=new Date().toISOString().slice(0,10);const incoming=new URLSearchParams(location.search).get('project');if(incoming)$('project').value=incoming;
 function show(n){cur=n;steps.forEach((x,i)=>x.classList.toggle('active',i===n));$('bar').style.width=(n/last*100)+'%';$('count').textContent=n===0?'معاينة ميدانية':n===last?'اكتملت المعاينة':`${n} من ${last-1}`;back.style.visibility=n===0?'hidden':'visible';next.classList.toggle('hidden',n===last);next.textContent=n===0?'ابدأ':n===last-1?'عرض الملخص':'التالي';if(n===last)result();scrollTo({top:0,behavior:'smooth'})}next.onclick=()=>cur<last&&show(cur+1);back.onclick=()=>cur>0&&show(cur-1);
